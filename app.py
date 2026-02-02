@@ -1,37 +1,63 @@
 import streamlit as st
-from openai import OpenAI
 
-st.title("🤖 나의 AI 챗봇")
+# 페이지 설정
+st.set_page_config(
+    page_title="나와 어울리는 영화는?",
+    page_icon="🎬",
+    layout="centered"
+)
 
-# 사이드바에서 API Key 입력
-api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+# 제목
+st.title("🎬 나와 어울리는 영화는?")
 
-# 대화 기록 초기화
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# 소개 문구
+st.write(
+    "간단한 질문 5개로 알아보는 나의 영화 취향! 🎥\n\n"
+    "지금 내 성향과 가장 잘 어울리는 영화 장르는 무엇일까요?"
+)
 
-# 이전 대화 표시
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+st.divider()
 
-# 사용자 입력 처리
-if prompt := st.chat_input("메시지를 입력하세요"):
-    if not api_key:
-        st.error("⚠️ 사이드바에서 API Key를 입력해주세요!")
-    else:
-        # 사용자 메시지 저장 및 표시
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        
-        # AI 응답 생성
-        with st.chat_message("assistant"):
-            client = OpenAI(api_key=api_key)
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=st.session_state.messages
-            )
-            reply = response.choices[0].message.content
-            st.markdown(reply)
-            st.session_state.messages.append({"role": "assistant", "content": reply})
+# 질문 1
+q1 = st.radio(
+    "1. 주말에 가장 하고 싶은 것은?",
+    ["집에서 휴식", "친구와 놀기", "새로운 곳 탐험", "혼자 취미생활"],
+    key="q1"
+)
+
+# 질문 2
+q2 = st.radio(
+    "2. 스트레스 받으면?",
+    ["혼자 있기", "수다 떨기", "운동하기", "맛있는 거 먹기"],
+    key="q2"
+)
+
+# 질문 3
+q3 = st.radio(
+    "3. 영화에서 중요한 것은?",
+    ["감동 스토리", "시각적 영상미", "깊은 메시지", "웃는 재미"],
+    key="q3"
+)
+
+# 질문 4
+q4 = st.radio(
+    "4. 여행 스타일은?",
+    ["계획적", "즉흥적", "액티비티", "힐링"],
+    key="q4"
+)
+
+# 질문 5
+q5 = st.radio(
+    "5. 친구 사이에서 나는?",
+    ["듣는 역할", "주도하기", "분위기 메이커", "필요할 때 나타남"],
+    key="q5"
+)
+
+st.divider()
+
+# 결과 보기 버튼
+if st.button("🎬 결과 보기"):
+    st.subheader("🔍 분석 중...")
+    st.write("당신의 답변을 바탕으로 영화를 분석하고 있어요. 잠시만 기다려 주세요!")
+
+
